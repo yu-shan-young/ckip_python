@@ -4,7 +4,7 @@ import sys
 
 ##sys.version_info 表示當前pythin版本
 if sys.version_info >= (3, 0):
-	import configparser as ConfigParser
+	import configparser as ConfigParser   ###因在python 3 中ConfigParser模块名已更名为configparser
 else:
 	import ConfigParser
 
@@ -17,21 +17,26 @@ config = ConfigParser.ConfigParser()
 #用config對象讀取配置文件
 config.read('config.ini')
 
-##Config.get():取得文本
-？？？？？？這在做哈？？？？？
+##get(section, option):获取section中option的值，返回为string类型
+
+### get name and paasword
 authentication_string = "<authentication username=\"%s\" password=\"%s\"/>" % (config.get("Authentication","Username"), config.get("Authentication","Password"))
+### get ip and port 
 connect_target = config.get("Server","IP"), int(config.get("Server","Port"))
 
-class parse_xml:
-	def __init__(self,input_xml_str):
+class parse_xml:  ##解析
+	###__init__ : 创建实例, self:實例本身, 
+	def __init__(self,input_xml_str):  
 		self.status_code, self.status_str, self.result = None, '', ''
 		self.core = xml.parsers.expat.ParserCreate('utf-8'). ###創utf-8編碼的解析器
 		self.core.StartElementHandler = self.start_element
 		self.core.EndElementHandler = self.end_element
 		self.core.CharacterDataHandler = self.char_data
 		self.pointer = None
+		
+		### 斷詞??
 		if type(input_xml_str) is str:
-			self.core.Parse(input_xml_str.strip(),1)
+			self.core.Parse(input_xml_str.strip(),1)  ###input_xml_str.strip()去除首尾空格
 		else:
 			self.core.Parse(input_xml_str.encode('utf-8').strip(),1)
 	def start_element(self,name,attrs):
@@ -54,19 +59,21 @@ class parse_xml:
 
 
 def ckip_client(input_text,output_file=None):
-	input_text = input_text.replace('　',' ').strip()
+	input_text = input_text.replace('　',' ').strip()   ###空格(全->半)&&去頭尾空白
 	input_text = input_text.replace('&', '&amp;')
 	input_text = input_text.replace('<', '&lt;')
 	input_text = input_text.replace('>', '&gt;')
 	input_text = input_text.replace('\'','&apos;')
 	input_text = input_text.replace('"', '&quot;')
 	text = my_format % (authentication_string, input_text)
+	
+	###err
 	if sys.version_info >= (3, 0) and len(text) >= 7900:
 		raise ValueError("Your input text is too long.")
 	elif sys.version_info < (3, 0) and len(text.decode('utf-8')) >= 7900:
 		raise ValueError("Your input text is too long.")
-	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	sock.connect(connect_target)
+	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  ###定义socket类型，网络通信，TCP
+	sock.connect(connect_target) ##連接ip和端口
 	try:
 		sock.sendall(text)
 		downloaded = ''
