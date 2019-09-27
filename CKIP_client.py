@@ -2,6 +2,7 @@
 import xml.parsers.expat
 import sys
 
+##sys.version_info 表示當前pythin版本
 if sys.version_info >= (3, 0):
 	import configparser as ConfigParser
 else:
@@ -10,15 +11,21 @@ else:
 
 my_format = "<?xml version=\"1.0\"?><wordsegmentation version=\"0.1\" charsetcode=\"utf-8\"><option showcategory=\"1\"/>%s<text>%s</text></wordsegmentation>"
 
+#生成config對象
 config = ConfigParser.ConfigParser()
+
+#用config對象讀取配置文件
 config.read('config.ini')
+
+##Config.get():取得文本
+？？？？？？這在做哈？？？？？
 authentication_string = "<authentication username=\"%s\" password=\"%s\"/>" % (config.get("Authentication","Username"), config.get("Authentication","Password"))
 connect_target = config.get("Server","IP"), int(config.get("Server","Port"))
 
 class parse_xml:
 	def __init__(self,input_xml_str):
 		self.status_code, self.status_str, self.result = None, '', ''
-		self.core = xml.parsers.expat.ParserCreate('utf-8')
+		self.core = xml.parsers.expat.ParserCreate('utf-8'). ###創utf-8編碼的解析器
 		self.core.StartElementHandler = self.start_element
 		self.core.EndElementHandler = self.end_element
 		self.core.CharacterDataHandler = self.char_data
